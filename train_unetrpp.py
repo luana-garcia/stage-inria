@@ -7,7 +7,7 @@ import plotly.io as pio
 pio.renderers.default = "vscode"
 import os
 
-from mfai.mfai.pytorch.models import unetrpp
+from adapted_unetrpp import unetrpp
 import torch.nn as nn
 from tqdm import tqdm
 
@@ -101,7 +101,7 @@ class MeteoUNetRPP:
         self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=1e-4, weight_decay=1e-5)
         self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1, patience=10)
     
-    def train(self):
+    def train(self, train_loader, val_loader):
         # Training loop
         for epoch in range(self.num_epochs):
             self.model.train()
@@ -141,23 +141,3 @@ class MeteoUNetRPP:
     def save_model(self):
         # Salvar o modelo treinado
         torch.save(self.model.state_dict(), "unetrpp_meteo_canal21.pth")
-
-############## Execute training ############## 
-
-
-
-# model = MeteoUNetRPP()
-# model.set_parameters()
-
-# data = MeteoDataset(channel=21)
-
-# # Dividir em treinamento e validação
-# train_size = int(0.8 * len(data))  # 80% para treinamento
-# val_size = len(data) - train_size
-# train_dataset, val_dataset = torch.utils.data.random_split(data, [train_size, val_size])
-
-# train_loader = DataLoader(train_dataset, batch_size=model.batch_size, shuffle=True)
-# val_loader = DataLoader(val_dataset, batch_size=model.batch_size, shuffle=False)
-
-# model.train()
-# model.save_model()
